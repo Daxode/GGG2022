@@ -1,0 +1,9 @@
+{
+  "dependencies": {   
+    "com.unity.entities": "file:../../../dots/Packages/com.unity.entities",
+    "com.unity.entities.graphics": "file:../../../dots/Packages/com.unity.entities.graphics",
+    "com.unity.physics": "file:../../../dots/Packages/com.unity.physics"
+  },
+  "enableLockFile": false,
+  "registry": "https://artifactory.prd.cds.internal.unity3d.com/artifactory/api/npm/upm-candidates"
+}
