@@ -1,10 +1,12 @@
-﻿using Unity.Collections;
+﻿using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 using static Unity.Entities.SystemAPI;
 
+[BurstCompile]
 partial struct VoxelSpawnSystem : ISystem
 {
     public void OnCreate(ref SystemState state)
@@ -15,6 +17,7 @@ partial struct VoxelSpawnSystem : ISystem
     public void OnDestroy(ref SystemState state) { }
 
     bool m_RunWithChangeFilter;
+    [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
         // Native collections means line 12 doesn't work so doing this instead o.o
