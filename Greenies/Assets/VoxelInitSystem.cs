@@ -1,7 +1,9 @@
 ﻿using Unity.Burst;
 using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Rendering;
 using Unity.Transforms;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -35,17 +37,39 @@ partial struct VoxelSpawnerSystem : ISystem
             cmd.Instantiate(playInfo.voxelPrefab, entities);
             cmd.AddComponent<BlockTag>(entities);
             var creationEntityCounter = 0;
+            var offset = new float3(-playInfo.gridDimensionSize, 0, -playInfo.gridDimensionSize) * .5f;
             for (int y = 0; y < playInfo.gridDimensionSize; y++)
             {
                 for (int x = 0; x < playInfo.gridDimensionSize; x++)
                 {
                     var index = playArea.blockField[x + y * playInfo.gridDimensionSize];
                     if (index != BlockState.Clear)
-                        cmd.SetComponent(entities[creationEntityCounter++], new Translation{Value = new float3(x, 1, y)});
+                    {
+                        var i = creationEntityCounter++;
+                        cmd.SetComponent(entities[i], new Translation{Value = offset + new float3(x, 1, y)});
+                        //cmd.SetComponent();
+                    }
                 }
             }
         }
         cmd.Playback(state.EntityManager);
+    }
+}
+
+[UpdateAfter(typeof(VoxelSpawnerSystem))]
+partial struct ChangeColorSystem : ISystem
+{
+    public void OnCreate(ref SystemState state) { }
+
+    public void OnDestroy(ref SystemState state) { }
+
+    public void OnUpdate(ref SystemState state)
+    {
+        foreach (var (color, translation) in Query<RefRW<URPMaterialPropertyBaseColor>, RefRO<Translation>>())
+        {
+            var hueColor = Color.HSVToRGB((float)math.frac(math.csum(translation.ValueRO.Value) * 0.01f+SystemAPI.Time.ElapsedTime), 1, 1);
+            color.ValueRW.Value = UnsafeUtility.As<Color, float4>(ref hueColor);
+        }
     }
 }
 
@@ -124,7 +148,7 @@ partial struct VoxelUpdateSystem : ISystem
     Random m_Random;
     public void OnUpdate(ref SystemState state)
     {
-        if (Mouse.current.leftButton.isPressed)
+        if (Mouse.current.leftButton.wasPressedThisFrame)
         {
             ref var data = ref GetSingletonRW<PlayAreaData>().ValueRW;
             var index = m_Random.NextInt(data.blockField.Length);
