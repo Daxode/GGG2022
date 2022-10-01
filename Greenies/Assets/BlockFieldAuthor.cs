@@ -37,6 +37,18 @@ public enum BlockState : byte
 {
     Clear,
     Stone,
+    DryStone,
     Dirt,
     Grass,
+    Sand,
+}
+
+public struct BlockStateHack : IEquatable<BlockStateHack>
+{
+    BlockState m_State;
+    BlockStateHack(BlockState state) => m_State = state;
+    public static implicit operator BlockStateHack(BlockState state) => new (state);
+    public bool Equals(BlockStateHack other) => m_State == other.m_State;
+    public override bool Equals(object obj) => obj is BlockStateHack other && Equals(other);
+    public override int GetHashCode() => (int)m_State;
 }

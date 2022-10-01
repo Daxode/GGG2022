@@ -136,6 +136,7 @@ GameObject:
   - component: {fileID: 1886018191}
   - component: {fileID: 1886018190}
   - component: {fileID: 1886018194}
+  - component: {fileID: 1886018195}
   m_Layer: 0
   m_Name: PlayArea
   m_TagString: Untagged
@@ -243,4 +244,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   voxelPrefab: {fileID: 2418718448801549904, guid: ae831bdb20ae5414594e0f5fa0ce62af,
     type: 3}
-  gridDimensionSize: 50
+  gridDimensionSize: 100
+--- !u!114 &1886018195
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1886018189}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee4b1def984f4dfa9a1baa4db060d970, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  colorSand: {r: 0.6981132, g: 0.58504945, b: 0.45223683, a: 0}
+  colorDryStone: {r: 0.5849056, g: 0.5214059, b: 0.41200897, a: 0}
+  colorStone: {r: 0.30704874, g: 0.34970474, b: 0.4245283, a: 0}
+  colorDirt: {r: 0.5377358, g: 0.14542536, b: 0.14542536, a: 0}
+  colorGrass: {r: 0.46101603, g: 0.6698113, b: 0.18114388, a: 0}

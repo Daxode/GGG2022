@@ -6,6 +6,7 @@ using Unity.Mathematics;
 using static Unity.Entities.SystemAPI;
 
 [RequireMatchingQueriesForUpdate]
+[UpdateInGroup(typeof(InitializationSystemGroup))]
 [BurstCompile]
 partial struct BlockFieldInitSystem : ISystem
 {
@@ -18,7 +19,7 @@ partial struct BlockFieldInitSystem : ISystem
         if (!TryGetSingletonEntity<BlockFieldInfo>(out var playAreaEntity))
             return;
         
-        if (QueryBuilder().WithAll<BlockFieldInit>().Build().CalculateEntityCount() == 1)
+        if (!QueryBuilder().WithAll<BlockFieldInit>().Build().IsEmpty)
         {
             // Get PlayArea
             if (!HasSingleton<BlockField>()) 
@@ -39,7 +40,7 @@ partial struct BlockFieldInitSystem : ISystem
                 {
                     var index = x + y * playAreaInfo.gridDimensionSize;
                     var t = 0.5+noise.cnoise(.1f * new float3(x, y, 0))*0.5;
-                    playArea.blockField[index] = (BlockState)((int)BlockState.Stone * (int)math.round(t));
+                    playArea.blockField[index] = (BlockState)((int)BlockState.DryStone * (int)math.round(t));
                 }
             }
             
@@ -50,6 +51,7 @@ partial struct BlockFieldInitSystem : ISystem
 }
 
 [RequireMatchingQueriesForUpdate]
+[UpdateInGroup(typeof(InitializationSystemGroup))]
 [BurstCompile]
 partial struct BlockFieldDestroySystem : ISystem
 {
