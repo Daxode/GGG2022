@@ -1,32 +1,25 @@
-﻿using Unity.Burst;
-using Unity.Collections;
+﻿using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 using static Unity.Entities.SystemAPI;
 
-[BurstCompile]
-partial struct VoxelSpawnerSystem : ISystem
+partial struct VoxelSpawnSystem : ISystem
 {
     public void OnCreate(ref SystemState state)
     {
-        state.RequireForUpdate<VoxelMaterialLookup>();
-        //state.RequireForUpdate(QueryBuilder().WithAll<BlockField, BlockFieldInfo>().Build());
+        //state.RequireForUpdate<VoxelMaterialLookup>();
+        state.RequireForUpdate(QueryBuilder().WithAll<BlockField, BlockFieldInfo>().Build());
     }
-    
     public void OnDestroy(ref SystemState state) { }
 
     bool m_RunWithChangeFilter;
-    
-    [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        // if (!HasSingleton<VoxelMaterialLookup>() || QueryBuilder().WithAll<BlockField, BlockFieldInfo>().Build().IsEmpty)
-        // {
-        Debug.Log("Not there?");
-        //     return;
-        // }
+        // Native collections means line 12 doesn't work so doing this instead o.o
+        if (!HasSingleton<VoxelMaterialLookup>())
+            return;
         
         using var cmd = new EntityCommandBuffer(Allocator.Temp);
         if (m_RunWithChangeFilter)
@@ -46,7 +39,7 @@ partial struct VoxelSpawnerSystem : ISystem
         }
         cmd.Playback(state.EntityManager);
     }
-
+    
     void ReplaceVoxels(ref SystemState state, EntityCommandBuffer cmd, BlockField playArea, BlockFieldInfo playInfo)
     {
         cmd.DestroyEntitiesForEntityQuery(QueryBuilder().WithAll<VoxelTag>().Build());
