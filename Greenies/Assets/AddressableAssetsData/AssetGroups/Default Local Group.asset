@@ -16,13 +16,7 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: f6d138288b176794dadeb3ef64731c77
-  m_SerializeEntries:
-  - m_GUID: 6cbc0c143f6bede45adcd152d3cb8a8c
-    m_Address: Assets/rail.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - railing
-    FlaggedDuringContentUpdateRestriction: 0
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: f1c1c4494ca5f414683b191c80854770, type: 2}
   m_SchemaSet:
