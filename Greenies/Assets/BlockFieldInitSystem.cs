@@ -3,10 +3,11 @@ using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
+using static Unity.Entities.SystemAPI;
 
 [RequireMatchingQueriesForUpdate]
 [BurstCompile]
-partial struct VoxelInitSystem : ISystem
+partial struct BlockFieldInitSystem : ISystem
 {
     public void OnCreate(ref SystemState state) {}
     public void OnDestroy(ref SystemState state) {}
@@ -14,17 +15,17 @@ partial struct VoxelInitSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        if (!SystemAPI.TryGetSingletonEntity<PlayAreaInfo>(out var playAreaEntity))
+        if (!TryGetSingletonEntity<BlockFieldInfo>(out var playAreaEntity))
             return;
         
-        if (SystemAPI.QueryBuilder().WithAll<PlayAreaInit>().Build().CalculateEntityCount() == 1)
+        if (QueryBuilder().WithAll<BlockFieldInit>().Build().CalculateEntityCount() == 1)
         {
             // Get PlayArea
-            if (!SystemAPI.HasSingleton<PlayAreaData>()) 
-                state.EntityManager.AddComponent<PlayAreaData>(playAreaEntity);
+            if (!HasSingleton<BlockField>()) 
+                state.EntityManager.AddComponent<BlockField>(playAreaEntity);
 
-            ref var playArea = ref SystemAPI.GetSingletonRW<PlayAreaData>().ValueRW;
-            var playAreaInfo = SystemAPI.GetSingleton<PlayAreaInfo>();
+            ref var playArea = ref GetSingletonRW<BlockField>().ValueRW;
+            var playAreaInfo = GetSingleton<BlockFieldInfo>();
             
             // Dispose and Create
             if (playArea.blockField.IsCreated)
@@ -43,7 +44,24 @@ partial struct VoxelInitSystem : ISystem
             }
             
             // Set Init as done
-            state.EntityManager.SetComponentEnabled<PlayAreaInit>(playAreaEntity, false);
+            state.EntityManager.SetComponentEnabled<BlockFieldInit>(playAreaEntity, false);
         }
+    }
+}
+
+[RequireMatchingQueriesForUpdate]
+[BurstCompile]
+partial struct BlockFieldDestroySystem : ISystem
+{
+    public void OnCreate(ref SystemState state) { }
+    public void OnDestroy(ref SystemState state) { }
+    
+    [BurstCompile]
+    public void OnUpdate(ref SystemState state)
+    {
+        var queryToClean = QueryBuilder().WithAll<BlockField>().WithNone<BlockFieldInfo>().Build();
+        if (queryToClean.TryGetSingleton(out BlockField playAreaData))
+            playAreaData.blockField.Dispose();
+        state.EntityManager.RemoveComponent<BlockField>(queryToClean);
     }
 }

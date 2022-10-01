@@ -6,7 +6,7 @@ using Unity.Transforms;
 using UnityEngine;
 using static Unity.Entities.SystemAPI;
 
-[UpdateAfter(typeof(VoxelInitSystem))]
+[UpdateAfter(typeof(BlockFieldInitSystem))]
 [RequireMatchingQueriesForUpdate]
 [BurstCompile]
 partial struct VoxelSpawnerSystem : ISystem
@@ -18,7 +18,7 @@ partial struct VoxelSpawnerSystem : ISystem
     public void OnUpdate(ref SystemState state)
     {
         using var cmd = new EntityCommandBuffer(Allocator.Temp);
-        foreach (var (playArea, playInfo) in Query<PlayAreaData, PlayAreaInfo>().WithChangeFilter<PlayAreaDirty>())
+        foreach (var (playArea, playInfo) in Query<BlockField, BlockFieldInfo>().WithChangeFilter<BlockField>())
         {
             cmd.DestroyEntitiesForEntityQuery(QueryBuilder().WithAll<BlockTag>().Build());
 
@@ -50,20 +50,3 @@ partial struct VoxelSpawnerSystem : ISystem
 }
 
 struct BlockTag : IComponentData {}
-
-[RequireMatchingQueriesForUpdate]
-[BurstCompile]
-partial struct VoxelDestroySystem : ISystem
-{
-    public void OnCreate(ref SystemState state) { }
-    public void OnDestroy(ref SystemState state) { }
-    
-    [BurstCompile]
-    public void OnUpdate(ref SystemState state)
-    {
-        var queryToClean = QueryBuilder().WithAll<PlayAreaData>().WithNone<PlayAreaInfo>().Build();
-        if (queryToClean.TryGetSingleton(out PlayAreaData playAreaData))
-            playAreaData.blockField.Dispose();
-        state.EntityManager.RemoveComponent<PlayAreaData>(queryToClean);
-    }
-}
