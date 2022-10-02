@@ -49,7 +49,7 @@ partial struct VoxelSpawnSystem : ISystem
 
         var sum = 0;
         foreach (var blockState in playArea.blockField)
-            sum += (int)blockState;
+            sum += math.min((int)blockState, 1);
 
         var entities = CollectionHelper.CreateNativeArray<Entity>(sum, state.WorldUpdateAllocator);
         cmd.Instantiate(playInfo.voxelPrefab, entities);
@@ -69,6 +69,13 @@ partial struct VoxelSpawnSystem : ISystem
                 }
             }
         }
+    }
+
+    public static int GetIndex(ref BlockFieldInfo info, float3 pos)
+    {
+        var offset = new float3(info.gridDimensionSize, 0, info.gridDimensionSize) * .5f;
+        var indexes = pos + offset;
+        return (int) (indexes.x + indexes.z * info.gridDimensionSize);
     }
 }
 

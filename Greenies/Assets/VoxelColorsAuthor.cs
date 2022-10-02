@@ -4,6 +4,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Rendering;
 using UnityEngine;
+using UnityEngine.Serialization;
 using static Unity.Entities.SystemAPI;
 
 [UpdateInGroup(typeof(InitializationSystemGroup))]
@@ -21,9 +22,9 @@ partial struct CreateMaterialLookupSystem : ISystem, ISystemStartStop
         };
         var voxelColors = GetSingleton<VoxelColors>();
         voxelMaterialLookup.Value[BlockState.Dirt] = voxelColors.colorDirt;
-        voxelMaterialLookup.Value[BlockState.MachineHydrogenGenerator] = voxelColors.colorStone;
-        voxelMaterialLookup.Value[BlockState.MachineH20Generator] = voxelColors.colorDryStone;
-        voxelMaterialLookup.Value[BlockState.Stone] = voxelColors.colorSand;
+        voxelMaterialLookup.Value[BlockState.MachineHydrogenGenerator] = voxelColors.colorMachineHydrogenGenerator;
+        voxelMaterialLookup.Value[BlockState.MachineH20Generator] = voxelColors.colorMachineH20Generator;
+        voxelMaterialLookup.Value[BlockState.Stone] = voxelColors.colorStone;
         voxelMaterialLookup.Value[BlockState.Grass] = voxelColors.colorGrass;
         SetComponent(state.SystemHandle, voxelMaterialLookup);
     }
@@ -45,9 +46,12 @@ public struct VoxelMaterialLookup : IComponentData
 
 public class VoxelColorsAuthor : MonoBehaviour
 {
-    [SerializeField] Color colorSand;
-    [SerializeField] Color colorDryStone;
+    [FormerlySerializedAs("colorSand")]
     [SerializeField] Color colorStone;
+    [FormerlySerializedAs("colorDryStone")]
+    [SerializeField] Color colorMachineH20Generator;
+    [FormerlySerializedAs("colorStone")]
+    [SerializeField] Color colorMachineHydrogenGenerator;
     [SerializeField] Color colorDirt;
     [SerializeField] Color colorGrass;
     
@@ -57,11 +61,11 @@ public class VoxelColorsAuthor : MonoBehaviour
         {
             AddComponent(new VoxelColors
             {
-                colorStone = new URPMaterialPropertyBaseColor{Value = author.colorStone.AsFloat4()},
+                colorMachineHydrogenGenerator = new URPMaterialPropertyBaseColor{Value = author.colorMachineHydrogenGenerator.AsFloat4()},
                 colorDirt = new URPMaterialPropertyBaseColor{Value = author.colorDirt.AsFloat4()},
                 colorGrass = new URPMaterialPropertyBaseColor{Value = author.colorGrass.AsFloat4()},
-                colorSand = new URPMaterialPropertyBaseColor{Value = author.colorSand.AsFloat4()},
-                colorDryStone = new URPMaterialPropertyBaseColor{Value = author.colorDryStone.AsFloat4()},
+                colorStone = new URPMaterialPropertyBaseColor{Value = author.colorStone.AsFloat4()},
+                colorMachineH20Generator = new URPMaterialPropertyBaseColor{Value = author.colorMachineH20Generator.AsFloat4()},
             });
         }
     }
@@ -74,9 +78,9 @@ public static class ColorHelpers
 
 public struct VoxelColors : IComponentData
 {
-    public URPMaterialPropertyBaseColor colorSand;
-    public URPMaterialPropertyBaseColor colorDryStone;
     public URPMaterialPropertyBaseColor colorStone;
+    public URPMaterialPropertyBaseColor colorMachineH20Generator;
+    public URPMaterialPropertyBaseColor colorMachineHydrogenGenerator;
     public URPMaterialPropertyBaseColor colorDirt;
     public URPMaterialPropertyBaseColor colorGrass;
 }
