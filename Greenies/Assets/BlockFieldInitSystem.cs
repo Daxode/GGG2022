@@ -40,7 +40,7 @@ partial struct BlockFieldInitSystem : ISystem
                 {
                     var index = x + y * playAreaInfo.gridDimensionSize;
                     var t = 0.5+noise.cnoise(.1f * new float3(x, y, 0))*0.5;
-                    playArea.blockField[index] = (BlockState)((int)BlockState.DryStone * (int)math.round(t));
+                    playArea.blockField[index] = (BlockState)((int)BlockState.MachineH20Generator * (int)math.round(t));
                 }
             }
             

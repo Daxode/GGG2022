@@ -21,9 +21,9 @@ partial struct CreateMaterialLookupSystem : ISystem, ISystemStartStop
         };
         var voxelColors = GetSingleton<VoxelColors>();
         voxelMaterialLookup.Value[BlockState.Dirt] = voxelColors.colorDirt;
-        voxelMaterialLookup.Value[BlockState.Stone] = voxelColors.colorStone;
-        voxelMaterialLookup.Value[BlockState.DryStone] = voxelColors.colorDryStone;
-        voxelMaterialLookup.Value[BlockState.Sand] = voxelColors.colorSand;
+        voxelMaterialLookup.Value[BlockState.MachineHydrogenGenerator] = voxelColors.colorStone;
+        voxelMaterialLookup.Value[BlockState.MachineH20Generator] = voxelColors.colorDryStone;
+        voxelMaterialLookup.Value[BlockState.Stone] = voxelColors.colorSand;
         voxelMaterialLookup.Value[BlockState.Grass] = voxelColors.colorGrass;
         SetComponent(state.SystemHandle, voxelMaterialLookup);
     }

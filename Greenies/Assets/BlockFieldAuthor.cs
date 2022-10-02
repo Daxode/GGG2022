@@ -36,11 +36,11 @@ struct BlockFieldInfo : IComponentData
 public enum BlockState : byte
 {
     Clear,
-    Stone,
-    DryStone,
+    MachineHydrogenGenerator,
+    MachineH20Generator,
     Dirt,
     Grass,
-    Sand,
+    Stone,
 }
 
 public struct BlockStateHack : IEquatable<BlockStateHack>
